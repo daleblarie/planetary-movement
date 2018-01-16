@@ -80,12 +80,22 @@ SolarSystem.prototype.clear = function clear() {
 
 SolarSystem.prototype.move = function move() {
   for (let i = 0; i < this.list.length; i += 1) {
+    // update each planets velocity here
+    // if (planet === itself) {
+    //   break; or continue?
+    // }
+  }
+
+  for (let i = 0; i < this.list.length; i += 1) {
     this.list[i].move();
   }
 };
 
 const earth = new Planet('earth', 1, 1, 1, 'blue', 60, 65, 65);
-PLANET_LIST.push(earth);
+const mars = new Planet('mars', 1, 1, 1, 'red', 40, 65, 105);
+const venus = new Planet('venus', 1, 1, 1, 'yellow', 55, 115, 65);
+PLANET_LIST.push(earth, mars, venus);
+
 
 const ss = new SolarSystem(PLANET_LIST);
 
