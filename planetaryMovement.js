@@ -13,14 +13,9 @@
 // Helper Class
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-
-function clearCircle(x, y, radius) {
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-  ctx.clip();
-  ctx.clearRect(x - radius - 1, y - radius - 1, (radius + 1) * 2, (radius + 1) * 2);
-}
-const $planets = [];
+const CANVAS_HEIGHT = canvas.height;
+const CANVAS_WIDTH = canvas.width;
+const PLANET_LIST = [];
 
 // making Planet()
 /**
@@ -44,7 +39,6 @@ function Planet(name, mass, Xvel, Yvel, color, size, Xpos, Ypos) {
   this.size = size;
   this.pos = [Xpos, Ypos];
   this.name = name;
-  $planets.push(this);
 }
 
 Planet.prototype.draw = function draw() {
@@ -54,10 +48,6 @@ Planet.prototype.draw = function draw() {
   ctx.fill();
   ctx.stroke();
   ctx.closePath();
-};
-
-Planet.prototype.clear = function clear() {
-  clearCircle(this.pos[0], this.pos[1], this.size + 2);
 };
 
 Planet.prototype.move = function move() {
@@ -81,7 +71,26 @@ function SolarSystem(list) {
 
 SolarSystem.prototype.draw = function draw() {
   for (let i = 0; i < this.list.length; i += 1) {
-    this.list[i].clearCircle();
-    setTimeout(this.list[i].draw(), 5);
+    this.list[i].draw();
   }
 };
+SolarSystem.prototype.clear = function clear() {
+  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+};
+
+SolarSystem.prototype.move = function move() {
+  for (let i = 0; i < this.list.length; i += 1) {
+    this.list[i].move();
+  }
+};
+
+const earth = new Planet('earth', 1, 1, 1, 'blue', 60, 65, 65);
+PLANET_LIST.push(earth);
+
+const ss = new SolarSystem(PLANET_LIST);
+
+setInterval(() => {
+  ss.clear();
+  ss.move();
+  ss.draw();
+}, 10);
