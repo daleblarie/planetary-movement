@@ -17,6 +17,22 @@ const CANVAS_HEIGHT = canvas.height;
 const CANVAS_WIDTH = canvas.width;
 const PLANET_LIST = [];
 
+function force(mass1, mass2, pt1, pt2) {
+  const G = -5;
+  const x1 = pt1[0];
+  const x2 = pt2[0];
+  const y1 = pt1[1];
+  const y2 = pt2[1];
+  const dist = Math.sqrt(((x1 - x2) ** 2) + ((y1 - y2) ** 2));
+
+  const xHat = (x2 - x1) / dist;
+  const yHat = (y2 - y1) / dist;
+  const forceMagnitude = (-G * mass1 * mass2) / (dist ** 2);
+  const forceXVector = xHat * forceMagnitude;
+  const forceYVector = yHat * forceMagnitude;
+  return [forceXVector, forceYVector];
+}
+
 // making Planet()
 /**
 add
@@ -80,10 +96,18 @@ SolarSystem.prototype.clear = function clear() {
 
 SolarSystem.prototype.move = function move() {
   for (let i = 0; i < this.list.length; i += 1) {
-    // update each planets velocity here
-    // if (planet === itself) {
-    //   break; or continue?
-    // }
+    const planet1 = this.list[i];
+    const totalForceOnPlanet1 = [0, 0];
+    for (let j = 0; j < this.list.length; j += 1) {
+      const planet2 = this.list[j];
+      if (planet1 !== planet2) {
+        const currentForce = force(planet1.mass, planet2.mass, planet1.pos, planet2.pos);
+        totalForceOnPlanet1[0] += currentForce[0];
+        totalForceOnPlanet1[1] += currentForce[1];
+      }
+    }
+    planet1.vel[0] += totalForceOnPlanet1[0] / planet1.mass;
+    planet1.vel[1] += totalForceOnPlanet1[1] / planet1.mass;
   }
 
   for (let i = 0; i < this.list.length; i += 1) {
@@ -91,8 +115,8 @@ SolarSystem.prototype.move = function move() {
   }
 };
 
-const earth = new Planet('earth', 1, 1, 1, 'blue', 60, 65, 65);
-const mars = new Planet('mars', 1, 1, 1, 'red', 40, 65, 105);
+const earth = new Planet('earth', 10, 0, 0, 'blue', 60, 65, 165);
+const mars = new Planet('mars', 1, 0.5, 0, 'red', 40, 65, 305);
 const venus = new Planet('venus', 1, 1, 1, 'yellow', 55, 115, 65);
 PLANET_LIST.push(earth, mars, venus);
 
