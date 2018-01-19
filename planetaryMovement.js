@@ -18,13 +18,16 @@ const CANVAS_WIDTH = canvas.width;
 const PLANET_LIST = [];
 
 function force(mass1, mass2, pt1, pt2) {
-  const G = -5;
+  const G = -.5
   const x1 = pt1[0];
   const x2 = pt2[0];
   const y1 = pt1[1];
   const y2 = pt2[1];
   const dist = Math.sqrt(((x1 - x2) ** 2) + ((y1 - y2) ** 2));
 
+  if (dist < 50) {
+    return [0, 0];
+  }
   const xHat = (x2 - x1) / dist;
   const yHat = (y2 - y1) / dist;
   const forceMagnitude = (-G * mass1 * mass2) / (dist ** 2);
@@ -115,10 +118,16 @@ SolarSystem.prototype.move = function move() {
   }
 };
 
-const earth = new Planet('earth', 10, 0, 0, 'blue', 60, 65, 165);
-const mars = new Planet('mars', 1, 0.5, 0, 'red', 40, 65, 305);
-const venus = new Planet('venus', 1, 1, 1, 'yellow', 55, 115, 65);
-PLANET_LIST.push(earth, mars, venus);
+const earth = new Planet('earth', 1000, 10, 0, 'blue', 60, 1500, 0);
+// const mars = new Planet('mars', 5, 18, 0, 'red', 40, 1500, 700);
+// const venus = new Planet('venus', 5, 18, 0, 'green', 55, 1500, 600);
+// const a = new Planet('saturn', 5, 14, -0, 'orange', 55, 1500, 500);
+// const b = new Planet('pluto', 5, 13, 0, 'purple', 55, 1500, 400);
+// const c = new Planet('uranus', 5, 12, 0, 'yellow', 55, 1500, 300);
+const moon = new Planet('moon', 0.1, 10 + 2.88, 0, 'red', 25, 1500, 60);
+const d = new Planet('sun', 200000, -0.001, 0, 'yellow', 30, 1500, 1000);
+
+PLANET_LIST.push(earth, moon, d);
 
 
 const ss = new SolarSystem(PLANET_LIST);
@@ -127,4 +136,4 @@ setInterval(() => {
   ss.clear();
   ss.move();
   ss.draw();
-}, 10);
+}, 0.01);
