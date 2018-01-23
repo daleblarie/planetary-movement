@@ -16,7 +16,7 @@ const ctx = canvas.getContext('2d');
 const CANVAS_HEIGHT = canvas.height;
 const CANVAS_WIDTH = canvas.width;
 const PLANET_LIST = [];
-const G = -0.8;
+const G = -1.8;
 
 function force(mass1, mass2, pt1, pt2) {
   const x1 = pt1[0];
@@ -117,40 +117,33 @@ SolarSystem.prototype.move = function move() {
     this.list[i].move();
   }
 };
-function PlanetVelocity(bodyOrbitingMass, distance) {
-  this.mass = bodyOrbitingMass;
-  this.distance = distance;
-  this.desiredVel = Math.sqrt((-G * this.mass) / this.distance);
+function planetVelocity(bodyOrbitingMass, distance) {
+  return Math.sqrt((-G * bodyOrbitingMass) / distance);
 }
-const earth = new Planet('earth', 10, 0, 0, 'blue', 60, 2800, 2000);
-const moon = new Planet('moon', 0.1, 0, 0, 'white', 25, 2850, 2000);
-const mars = new Planet('mars', 5, 0, 0, 'red', 40, 2000, 3000);
-const venus = new Planet('venus', 8, 0, 0, 'green', 55, 1600, 2000);
-const saturn = new Planet('saturn', 5, 0, 0, 'orange', 55, 3500, 2000);
-const pluto = new Planet('pluto', 0.5, 0, 0, 'purple', 25, 100, 2000);
-const uranus = new Planet('uranus', 5, 0, 0, 'aqua', 55, 2000, 300);
-const jupiter = new Planet('jupiter', 5, 0, 0, 'chocolate', 70, 500, 2000);
-const d = new Planet('sun', 1000, 0, 0, 'yellow', 30, 2000, 2000);
 
-PLANET_LIST.push(earth, moon, mars, venus, saturn, pluto, uranus, jupiter, d);
-const earthVel = new PlanetVelocity(d.mass, 800);
-const marsVel = new PlanetVelocity(d.mass, 1000);
-const moonVel = new PlanetVelocity(PLANET_LIST[0].mass, 50);
-const venusVel = new PlanetVelocity(d.mass, 400);
-const saturnVel = new PlanetVelocity(d.mass, 1500);
-const plutoVel = new PlanetVelocity(d.mass, 1900);
-const uranusVel = new PlanetVelocity(d.mass, 1700);
-const jupiterVel = new PlanetVelocity(d.mass, 1500);
+const SUN_MASS = 1000;
+const EARTH_MASS = 10;
 
-PLANET_LIST[0].vel[1] = earthVel.desiredVel;
-PLANET_LIST[1].vel[1] = moonVel.desiredVel + PLANET_LIST[0].vel[1];
-PLANET_LIST[2].vel[0] = -marsVel.desiredVel;
-PLANET_LIST[3].vel[1] = -venusVel.desiredVel;
-PLANET_LIST[4].vel[1] = saturnVel.desiredVel;
-PLANET_LIST[5].vel[1] = -plutoVel.desiredVel;
-PLANET_LIST[6].vel[0] = uranusVel.desiredVel;
-PLANET_LIST[7].vel[1] = -jupiterVel.desiredVel;
+const earthVel = planetVelocity(SUN_MASS, 800);
+const marsVel = planetVelocity(SUN_MASS, 1000);
+const moonVel = planetVelocity(EARTH_MASS, 50);
+const venusVel = planetVelocity(SUN_MASS, 400);
+const saturnVel = planetVelocity(SUN_MASS, 1500);
+const plutoVel = planetVelocity(SUN_MASS, 1900);
+const uranusVel = planetVelocity(SUN_MASS, 1700);
+const jupiterVel = planetVelocity(SUN_MASS, 1500);
 
+const earth = new Planet('earth', EARTH_MASS, earthVel, 0, 'blue', 60, 2800, 2000);
+const moon = new Planet('moon', 0.1, moonVel, 0, 'white', 25, 2850, 2000);
+const mars = new Planet('mars', 5, marsVel, 0, 'red', 40, 2000, 3000);
+const venus = new Planet('venus', 8, 0, venusVel, 'green', 55, 1600, 2000);
+const saturn = new Planet('saturn', 5, saturnVel, 0, 'orange', 55, 3500, 2000);
+const pluto = new Planet('pluto', 0.5, 0, plutoVel, 'purple', 25, 100, 2000);
+const uranus = new Planet('uranus', 5, 0, uranusVel, 'aqua', 55, 2000, 300);
+const jupiter = new Planet('jupiter', 5, jupiterVel, 0, 'chocolate', 70, 500, 2000);
+const sun = new Planet('sun', SUN_MASS, 0, 0, 'yellow', 30, 2000, 2000);
+
+PLANET_LIST.push(earth, moon, mars, venus, saturn, pluto, uranus, jupiter, sun);
 
 const ss = new SolarSystem(PLANET_LIST);
 
